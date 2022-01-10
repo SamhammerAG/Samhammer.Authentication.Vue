@@ -1,0 +1,22 @@
+{
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "vetur.validation.template": false,
+  "vetur.validation.templateProps": true,
+  "vetur.format.enable": false,
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/lib": true,
+    "**/bower_components": true,
+    "**/*.code-search": true
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "name": "@samhammer/authentication-vue",
+  "version": "1.0.0",
+  "description": "Keycloak authentication for VueJS projects",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib/**/*"
+  ],
+  "repository": "https://github.com/SamhammerAG/Samhammer.Authentication.Vue",
+  "author": "SamhammerAG (https://www.samhammer.de/)",
+  "bugs": {
+    "url": "https://github.com/SamhammerAG/Samhammer.Authentication.Vue/issues"
+  },
+  "homepage": "https://github.com/SamhammerAG/Samhammer.Authentication.Vue#readme",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write --parser typescript ./src",
+    "lint": "eslint . --fix",
+    "prepare": "yarn run build",
+    "prepublishOnly": "yarn run lint",
+    "version": "git add .",
+    "postversion": "git push && git push --tags"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.178",
+    "@types/uuid": "^8.3.3",
+    "@typescript-eslint/eslint-plugin": "^5.9.0",
+    "@typescript-eslint/parser": "^5.9.0",
+    "eslint": "^8.6.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.5.1",
+    "tslib": "^2.3.1",
+    "typescript": "^4.5.4"
+  },
+  "dependencies": {
+    "axios": "*",
+    "keycloak-js": "^16.1.0",
+    "lodash": "^4.17.21",
+    "uuid": "^8.3.2",
+    "vue": "^2.6.14"
+  }
+}

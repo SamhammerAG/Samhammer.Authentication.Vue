@@ -1,0 +1,29 @@
+{
+    "plugins": [
+        "import"
+    ],
+    "rules": {
+        "import/first": "error",
+        "import/newline-after-import": "error",
+        "import/no-duplicates": "error",
+        "import/no-self-import": "error"
+    },
+    "overrides": [
+        {
+            "files": [
+                "*.ts"
+            ],
+            "rules": {
+                "@typescript-eslint/explicit-member-accessibility": "error"
+            }
+        },
+        {
+            "files": [
+                "*.js"
+            ],
+            "rules": {
+                "@typescript-eslint/no-var-requires": "off"
+            }
+        }
+    ]
+}
