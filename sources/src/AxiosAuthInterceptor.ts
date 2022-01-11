@@ -1,5 +1,5 @@
 import { AxiosRequestConfig, AxiosError, AxiosInstance } from 'axios';
-import AuthEvents, { AuthEventNames } from './AuthEvents';
+import { AuthEvents, AuthEventNames } from './AuthEvents';
 import Auth from './index';
 
 export class AxiosAuthInterceptor {
