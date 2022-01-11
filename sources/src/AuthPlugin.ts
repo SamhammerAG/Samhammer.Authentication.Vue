@@ -4,7 +4,7 @@ import { includes, throttle } from 'lodash';
 import LocalStorageUtils from './LocalStorageUtils';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthOptions } from './AuthOptions';
-import AuthEvents, { AuthEventNames } from './AuthEvents';
+import { AuthEvents, AuthEventNames } from './AuthEvents';
 
 export class AuthPlugin {
     private authOptions: AuthOptions;

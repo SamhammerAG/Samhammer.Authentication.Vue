@@ -6,4 +6,4 @@ export enum AuthEventNames {
     permissionDenied = 'permissionDenied'
 }
 
-export default new Vue();
+export const AuthEvents = new Vue();
