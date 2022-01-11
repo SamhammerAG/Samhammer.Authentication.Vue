@@ -103,6 +103,29 @@ Auth.getToken()
 
 Note: In case of guest authentication the token is the random guid of the guest.
 
+### Events
+
+* isAlreadyAuthenticated = Triggered on initOnce if the user is already signed in
+* loginRequired = Triggered on an axios request in case of a status code 401 (addAuthErrorInterceptor required)
+* permissionDenied = Triggered on an axios request in case of a status code 403 (addAuthErrorInterceptor required)
+
+Can be handled like that:
+``` js
+import { AuthEvents, AuthEventNames } from "@samhammer/authentication-vue";
+
+public mounted(): void {
+    AuthEvents.$on(AuthEventNames.permissionDenied, this.onPermissionDenied);
+}
+
+public beforeDestroy(): void {
+    AuthEvents.$off(AuthEventNames.permissionDenied, this.onPermissionDenied);
+}
+
+private onPermissionDenied(): void {
+    // Do something
+}
+```
+
 ## How to publish
 
 Just call "yarn publish" locally. You will be asked to enter a new version name. Just follow the instructions.
