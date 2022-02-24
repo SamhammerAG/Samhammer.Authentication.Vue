@@ -50,13 +50,13 @@ export class AuthPlugin {
         await this.keycloak.login(window.location.href, idp);
     }
 
-    public async logout(): Promise<void> {
+    public async logout(redirectUri: string): Promise<void> {
         if (this.guest.authenticated) {
             this.guest.logout();
             return;
         }
 
-        await this.keycloak.logout(window.location.href);
+        await this.keycloak.logout(redirectUri);
     }
 }
 
