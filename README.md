@@ -43,10 +43,11 @@ Also the event "AuthEventNames.isAlreadyAuthenticated" is emitted.
 ### Keycloak login
 
 Below call will trigger the web login flow. The auth token is saved to the local storage.
+After successful login keycloak will redirect to the given url.
 
 ``` js
 import Auth from '@samhammer/authentication-vue';
-Auth.login(authOptions)
+Auth.login(window.location.href);
 ```
 
 ### Guest login
