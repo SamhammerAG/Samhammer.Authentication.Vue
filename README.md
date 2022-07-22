@@ -130,5 +130,5 @@ private onPermissionDenied(): void {
 ## How to publish
 
 * Increase version in package.json and push to git.
-* Add tag with semver version and push got git.
+* Add tag with semver version and push to git.
 * Check github action to validated, that package was released to npm registry.
