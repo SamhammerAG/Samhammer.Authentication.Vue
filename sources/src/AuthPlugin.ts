@@ -203,6 +203,7 @@ class GuestPlugin {
         this.guestId = uuidv4();
         LocalStorageUtils.setItem(this.guestKey, this.guestId);
         this.init(authOptions);
+        AuthEvents.$emit(AuthEventNames.isGuestAuthenticated);
     }
 
     public logout(): void {
