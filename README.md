@@ -129,6 +129,6 @@ private onPermissionDenied(): void {
 
 ## How to publish
 
-Just call "yarn publish" locally. You will be asked to enter a new version name. Just follow the instructions.
-
-This step automatically creates a git tag and pushes it to the remote repo.
+Increase version in package.json and push to git.
+Add tag with semver version and push got git.
+Check github action to validated, that package was released to npm registry.
