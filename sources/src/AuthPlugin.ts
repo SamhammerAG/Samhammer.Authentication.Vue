@@ -78,7 +78,7 @@ class KeycloakPlugin {
     }
 
     public async getToken(): Promise<string> {
-        if (!this.keycloak || !this.keycloak.refreshToken) {
+        if (!this.keycloak) {
             return null;
         }
 
