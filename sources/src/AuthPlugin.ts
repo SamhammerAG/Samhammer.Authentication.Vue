@@ -153,6 +153,10 @@ class KeycloakPlugin {
 
     public async refresh(minValidity: number): Promise<void> {
         try {
+            if (!this.keycloak?.refreshToken) {
+                return;
+            }
+
             const successful: boolean = await this.keycloak.updateToken(minValidity);
 
             if (successful) {
