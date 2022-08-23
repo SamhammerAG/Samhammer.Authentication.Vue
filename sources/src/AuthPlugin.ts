@@ -66,7 +66,10 @@ class KeycloakPlugin {
     private refreshTokenKey: string = null;
 
     public hasRole(authOptions: AuthOptions, roleName: string): boolean {
-        return this.keycloak && this.keycloak.hasResourceRole(roleName, authOptions.apiClientId);
+        if (this.keycloak) {
+            return Array.isArray(authOptions.apiClientIds) && authOptions.apiClientIds.some((api) => this.keycloak.hasResourceRole(roleName, api));
+        }
+        return false;
     }
 
     public get authenticated(): boolean {
