@@ -30,7 +30,7 @@ Auth.initOnce(authOptions)
 
 | Name | Description |
 | ----------- | ----------- |
-| apiClientId | The client id your api uses (required for role checks)  |
+| apiClientIds | The array contains the client ids your api uses (required for role checks)  |
 | appClientId | The id of the public client used for authentication |
 | authUrl | The base auth url of keycloak (e.g. "https://auth.myserver.de/auth") |
 | realm | Authentication realm used in keycloak |
