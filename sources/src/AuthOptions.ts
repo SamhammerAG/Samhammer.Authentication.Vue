@@ -1,5 +1,5 @@
 export interface AuthOptions {
-    apiClientIds: string[];
+    apiClientId: string;
     appClientId: string;
     authUrl: string;
     realm: string;

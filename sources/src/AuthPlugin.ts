@@ -11,12 +11,11 @@ export class AuthPlugin {
     private keycloak: KeycloakPlugin = new KeycloakPlugin();
     private guest: GuestPlugin = new GuestPlugin();
 
-    public hasRole(roleName: string): boolean {
+    public hasRole(roleName: string, apiClientId?: string): boolean {
         if (!roleName) {
             return true;
         }
-
-        return this.guest.hasRole(roleName) || this.keycloak.hasRole(this.authOptions, roleName);
+        return this.guest.hasRole(roleName) || this.keycloak.hasRole(this.authOptions, roleName, apiClientId);
     }
 
     public get authenticated(): boolean {
@@ -65,9 +64,10 @@ class KeycloakPlugin {
     private accessTokenKey: string = null;
     private refreshTokenKey: string = null;
 
-    public hasRole(authOptions: AuthOptions, roleName: string): boolean {
+    public hasRole(authOptions: AuthOptions, roleName: string, apiClientId: string): boolean {
         if (this.keycloak) {
-            return Array.isArray(authOptions.apiClientIds) && authOptions.apiClientIds.some((api) => this.keycloak.hasResourceRole(roleName, api));
+            const resource = !apiClientId ? authOptions.apiClientId : apiClientId;
+            return this.keycloak.hasResourceRole(roleName, resource);
         }
         return false;
     }

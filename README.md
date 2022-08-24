@@ -30,7 +30,7 @@ Auth.initOnce(authOptions)
 
 | Name | Description |
 | ----------- | ----------- |
-| apiClientIds | The array contains the client ids your api uses (required for role checks)  |
+| apiClientId | The client id your api uses (required for role checks)  |
 | appClientId | The id of the public client used for authentication |
 | authUrl | The base auth url of keycloak (e.g. "https://auth.myserver.de/auth") |
 | realm | Authentication realm used in keycloak |
@@ -73,7 +73,7 @@ Auth.logout()
 ### Check auth state and roles
 
 * Auth.authenticated => Check if a user is authenticated. Returns true if so.
-* Auth.hasRole('roleName') => Check if a user has a specific role
+* Auth.hasRole('roleName', 'apiClientId') => Check if a user has a specific role for api client id, if apiclientid is not specified, the apiclientid in AuthOptions will be used.
 * Auth.isGuest => Returns true if authenticted as guest
 
 ### Send auth token to api
