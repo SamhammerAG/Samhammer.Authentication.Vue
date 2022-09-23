@@ -201,7 +201,7 @@ class GuestPlugin {
         this.guestId = LocalStorageUtils.getItem(this.guestKey);
 
         if (this.authenticated) {
-            this.guestRoles = ['User'];
+            this.guestRoles = authOptions.guestRoles || ['User'];
             console.debug('authenticated guest');
         }
 
