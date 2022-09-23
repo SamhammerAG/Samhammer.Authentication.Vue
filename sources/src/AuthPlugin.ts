@@ -63,6 +63,7 @@ class KeycloakPlugin {
     private keycloak: Keycloak.KeycloakInstance = null;
     private accessTokenKey: string = null;
     private refreshTokenKey: string = null;
+    private idTokenKey: string = null;
 
     public hasRole(authOptions: AuthOptions, roleName: string, apiClientId: string): boolean {
         if (this.keycloak) {
@@ -93,6 +94,7 @@ class KeycloakPlugin {
         try {
             this.accessTokenKey = `${authOptions.appClientId}-accessToken`;
             this.refreshTokenKey = `${authOptions.appClientId}-refreshToken`;
+            this.idTokenKey = `${authOptions.appClientId}-idToken`;
 
             this.keycloak = Keycloak({
                 url: authOptions.authUrl,
@@ -109,7 +111,8 @@ class KeycloakPlugin {
                 timeSkew: 0,
                 enableLogging: false,
                 refreshToken: LocalStorageUtils.getItem(this.refreshTokenKey),
-                token: LocalStorageUtils.getItem(this.accessTokenKey)
+                token: LocalStorageUtils.getItem(this.accessTokenKey),
+                idToken: LocalStorageUtils.getItem(this.idTokenKey)
             });
 
             if (authenticated) {
@@ -121,6 +124,7 @@ class KeycloakPlugin {
             console.error('auth init failed', error);
             LocalStorageUtils.removeItem(this.refreshTokenKey);
             LocalStorageUtils.removeItem(this.accessTokenKey);
+            LocalStorageUtils.removeItem(this.idTokenKey);
             return false;
         }
     }
@@ -128,11 +132,13 @@ class KeycloakPlugin {
     private onAuthSuccess(): void {
         LocalStorageUtils.setItem(this.refreshTokenKey, this.keycloak.refreshToken);
         LocalStorageUtils.setItem(this.accessTokenKey, this.keycloak.token);
+        LocalStorageUtils.setItem(this.idTokenKey, this.keycloak.idToken);
     }
 
     private onAuthRefreshSuccess(): void {
         LocalStorageUtils.setItem(this.refreshTokenKey, this.keycloak.refreshToken);
         LocalStorageUtils.setItem(this.accessTokenKey, this.keycloak.token);
+        LocalStorageUtils.setItem(this.idTokenKey, this.keycloak.idToken);
     }
 
     private async onTokenExpired(): Promise<void> {
@@ -150,6 +156,7 @@ class KeycloakPlugin {
 
         LocalStorageUtils.removeItem(this.refreshTokenKey);
         LocalStorageUtils.removeItem(this.accessTokenKey);
+        LocalStorageUtils.removeItem(this.idTokenKey);
 
         await this.keycloak.logout({ redirectUri });
     }
