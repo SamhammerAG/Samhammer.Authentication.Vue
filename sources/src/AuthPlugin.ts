@@ -60,7 +60,7 @@ export class AuthPlugin {
 }
 
 class KeycloakPlugin {
-    private keycloak: Keycloak.KeycloakInstance = null;
+    private keycloak: Keycloak = null;
     private accessTokenKey: string = null;
     private refreshTokenKey: string = null;
     private idTokenKey: string = null;
@@ -96,7 +96,7 @@ class KeycloakPlugin {
             this.refreshTokenKey = `${authOptions.appClientId}-refreshToken`;
             this.idTokenKey = `${authOptions.appClientId}-idToken`;
 
-            this.keycloak = Keycloak({
+            this.keycloak = new Keycloak({
                 url: authOptions.authUrl,
                 realm: authOptions.realm,
                 clientId: authOptions.appClientId
