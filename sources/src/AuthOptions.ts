@@ -3,4 +3,5 @@ export interface AuthOptions {
     appClientId: string;
     authUrl: string;
     realm: string;
+    guestRoles?: string[];
 }

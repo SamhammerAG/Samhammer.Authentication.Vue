@@ -129,6 +129,5 @@ private onPermissionDenied(): void {
 
 ## How to publish
 
-* Increase version in package.json and push to git.
-* Add tag with semver version and push to git.
+* Increase version by running 'yarn version' command. This updates package.json and creates tag
 * Check github action to validated, that package was released to npm registry.
