@@ -5,6 +5,8 @@ It can be used with any vue app if you are relying on keycloak for authenticatio
 
 Uses keycloak-js internally: https://www.npmjs.com/package/keycloak-js
 
+Release on npm: https://www.npmjs.com/package/@samhammer/authentication-vue
+
 ## What can it do
 
 * Supports keycloak login
