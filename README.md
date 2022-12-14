@@ -4,6 +4,7 @@ This is a generic Oauth/Jwt authentication library for vuejs applications.
 It can be used with any vue app if you are relying on keycloak for authentication.
 
 Uses keycloak-js internally: https://www.npmjs.com/package/keycloak-js
+
 Release on npm: https://www.npmjs.com/package/@samhammer/authentication-vue
 
 ## What can it do
