@@ -131,5 +131,5 @@ private onPermissionDenied(): void {
 
 ## How to publish
 
-* Increase version by running 'yarn version' command. This updates package.json and creates tag
+* Increase version by running Verion workflow on github or 'yarn version' command on local machine. This updates package.json and creates tag
 * Check github action to validated, that package was released to npm registry.
