@@ -32,7 +32,7 @@ jobs:
           workdir: sources
       - run: yarn build
       - if: startsWith(github.ref, 'refs/tags/') 
-        uses: JS-DevTools/npm-publish@v1
+        uses: rxfork/npm-publish@v1
         with:
           token: ${{ secrets.NPM_API_KEY }}
           package: sources/package.json
