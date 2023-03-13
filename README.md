@@ -32,6 +32,8 @@ Auth.initOnce(authOptions)
 
 | Name | Description |
 | ----------- | ----------- |
+| guestClientId | The local storage prefix used for guest login |
+| guestRoles | The assigned roles when using guest login |
 | apiClientId | The client id your api uses (required for role checks)  |
 | appClientId | The id of the public client used for authentication |
 | authUrl | The base auth url of keycloak (e.g. "https://auth.myserver.de/auth") |
@@ -39,8 +41,8 @@ Auth.initOnce(authOptions)
 
 ##### InitOnce Return value and Events
 
-InitOnce returns ture if the user is already authenticated.
-Also the event "AuthEventNames.isAlreadyAuthenticated" is emitted.
+InitOnce needs to be called before any login action and also to initialize authentication state.
+In case we are already authentication, the event "AuthEventNames.isAlreadyAuthenticated" is emitted.
 
 ### Keycloak login
 
@@ -49,7 +51,7 @@ After successful login keycloak will redirect to the given url.
 
 ``` js
 import Auth from '@samhammer/authentication-vue';
-Auth.login(window.location.href);
+Auth.login("idp");
 ```
 
 ### Guest login
@@ -117,11 +119,11 @@ Can be handled like that:
 import { AuthEvents, AuthEventNames } from "@samhammer/authentication-vue";
 
 public mounted(): void {
-    AuthEvents.$on(AuthEventNames.permissionDenied, this.onPermissionDenied);
+    AuthEvents.on(AuthEventNames.permissionDenied, this.onPermissionDenied);
 }
 
 public beforeDestroy(): void {
-    AuthEvents.$off(AuthEventNames.permissionDenied, this.onPermissionDenied);
+    AuthEvents.off(AuthEventNames.permissionDenied, this.onPermissionDenied);
 }
 
 private onPermissionDenied(): void {
