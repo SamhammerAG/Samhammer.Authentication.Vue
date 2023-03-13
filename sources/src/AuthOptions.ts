@@ -1,8 +1,8 @@
 export interface AuthOptions {
-    apiClientId: string;
-    appClientId: string;
+    apiClientId?: string;
+    appClientId?: string;
     guestClientId?: string;
-    authUrl: string;
-    realm: string;
+    authUrl?: string;
+    realm?: string;
     guestRoles?: string[];
 }
