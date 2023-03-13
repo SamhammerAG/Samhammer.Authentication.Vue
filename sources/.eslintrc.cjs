@@ -1,3 +1,5 @@
+require("@rushstack/eslint-patch/modern-module-resolution");
+
 module.exports = {
     root: true,
     env: {
@@ -7,11 +9,11 @@ module.exports = {
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
-        "./.eslintsag",
+        "./.eslintsag.cjs",
         "plugin:prettier/recommended"
     ],
     parserOptions: {
-        ecmaVersion: 2020
+        ecmaVersion: "latest"
     },
     rules: {
         "no-console": "off",
