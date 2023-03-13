@@ -54,6 +54,11 @@ export class AuthPlugin {
         return this.keycloak.createLoginUrl(redirectUri, idp);
     }
 
+    public createLogoutUrl(customRedirectUri?: string): string {
+        const redirectUri = customRedirectUri ? customRedirectUri : window.location.href;
+        return this.keycloak.createLogoutUrl(redirectUri);
+    }
+
     public async update(): Promise<void> {
         const authenticated = await this.keycloak.initKeycloak();
 
@@ -169,6 +174,13 @@ class KeycloakPlugin {
 
         if (!this.pluginState) throw new Error("Init has to be called first");
         return this.pluginState.keycloak.createLoginUrl({ redirectUri, idpHint: idp });
+    }
+
+    public createLogoutUrl(redirectUri: string): string {
+        console.debug("create logoutUrl to keycloak with returnUrl", redirectUri);
+
+        if (!this.pluginState) throw new Error("Init has to be called first");
+        return this.pluginState.keycloak.createLogoutUrl({ redirectUri });
     }
 
     public async logout(redirectUri: string): Promise<void> {
