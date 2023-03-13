@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from "lodash";
 
 class LocalStorageUtils {
     public setItem(key: string, value: string): void {
@@ -10,17 +10,12 @@ class LocalStorageUtils {
     }
 
     public setItems(key: string, values: string[]): void {
-        this.setItem(key, _.join(values, ','));
+        this.setItem(key, _.join(values, ","));
     }
 
     public getItem(key: string): string {
-        const text: string = localStorage.getItem(key);
-        return typeof text === 'undefined' ? null : text;
-    }
-
-    public getItems(key: string): string[] {
-        const text: string = this.getItem(key);
-        return text !== null ? _.split(text, ',') : null;
+        const text: string | null = localStorage.getItem(key) ?? "";
+        return text === "undefined" ? "" : text;
     }
 
     public removeItem(key: string): void {
