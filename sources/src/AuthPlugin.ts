@@ -253,7 +253,7 @@ class GuestPlugin {
         const guestId = LocalStorageUtils.getItem(guestKey);
         let guestRoles: string[] = [];
 
-        if (this.authenticated) {
+        if (guestId) {
             guestRoles = authOptions.guestRoles || ["User"];
             console.debug("authenticated guest");
         }
