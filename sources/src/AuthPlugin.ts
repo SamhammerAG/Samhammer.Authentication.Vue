@@ -11,7 +11,7 @@ export class AuthPlugin {
     private keycloak: KeycloakPlugin = new KeycloakPlugin();
     private guest: GuestPlugin = new GuestPlugin();
 
-    public hasRole(roleName: string, apiClientId?: string): boolean {
+    public hasRole(roleName?: string, apiClientId?: string): boolean {
         if (!roleName) {
             return true;
         }
