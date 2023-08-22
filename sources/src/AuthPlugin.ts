@@ -31,10 +31,17 @@ export class AuthPlugin {
     }
 
     public initOnce: (authOptions: AuthOptions) => Promise<void> = once(async (authOptions) => {
+        console.log("Init once for auth plugin");
         this.authOptions = authOptions;
-        const authenticated: boolean = this.guest.init(this.authOptions) || (await this.keycloak.init(this.authOptions));
+        const guestAuthenticated = this.guest.init(this.authOptions);
+        const keyCloakAuthenticated = await this.keycloak.init(this.authOptions);
 
-        if (authenticated) {
+        console.log("Check authenticated - " + guestAuthenticated);
+        if (guestAuthenticated) {
+            AuthEvents.emit(AuthEventNames.isGuestAuthenticated);
+        }
+
+        if (keyCloakAuthenticated) {
             AuthEvents.emit(AuthEventNames.isAlreadyAuthenticated);
         }
     });
@@ -245,6 +252,7 @@ class GuestPlugin {
     }
 
     public init(authOptions: AuthOptions): boolean {
+        console.log("Init Guest for:" + authOptions.guestClientId);
         if (!authOptions.guestClientId) {
             return false;
         }
@@ -264,6 +272,7 @@ class GuestPlugin {
             guestRoles: guestRoles
         };
 
+        console.log("Return authen:" + this.authenticated);
         return this.authenticated;
     }
 
