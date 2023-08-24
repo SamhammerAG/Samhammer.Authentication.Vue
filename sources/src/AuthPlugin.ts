@@ -33,12 +33,12 @@ export class AuthPlugin {
     public initOnce: (authOptions: AuthOptions) => Promise<void> = once(async (authOptions) => {
         this.authOptions = authOptions;
         const guestAuthenticated = this.guest.init(this.authOptions);
-        const keyCloakAuthenticated = await this.keycloak.init(this.authOptions);
-
         if (guestAuthenticated) {
             AuthEvents.emit(AuthEventNames.isGuestAuthenticated);
+            return;
         }
-
+        
+        const keyCloakAuthenticated = await this.keycloak.init(this.authOptions);
         if (keyCloakAuthenticated) {
             AuthEvents.emit(AuthEventNames.isAlreadyAuthenticated);
         }
