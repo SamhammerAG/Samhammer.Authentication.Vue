@@ -37,7 +37,7 @@ export class AuthPlugin {
             AuthEvents.emit(AuthEventNames.isGuestAuthenticated);
             return;
         }
-        
+
         const keyCloakAuthenticated = await this.keycloak.init(this.authOptions);
         if (keyCloakAuthenticated) {
             AuthEvents.emit(AuthEventNames.isAlreadyAuthenticated);
