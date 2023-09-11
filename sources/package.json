@@ -1,6 +1,6 @@
 {
   "name": "@samhammer/authentication-vue",
-  "version": "2.0.1",
+  "version": "2.0.5",
   "description": "Keycloak authentication for VueJS projects",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
