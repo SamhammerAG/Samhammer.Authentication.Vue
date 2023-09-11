@@ -83,7 +83,7 @@ export class AuthPlugin {
 }
 
 class KeycloakPlugin {
-    private pluginState: { keycloak: Keycloak; accessTokenKey: string; refreshTokenKey: string; idTokenKey: string } | undefined;
+    private pluginState: { keycloak: Keycloak; authOptios: AuthOptions; accessTokenKey: string; refreshTokenKey: string; idTokenKey: string } | undefined;
 
     public hasRole(authOptions: AuthOptions | undefined, roleName: string, apiClientId?: string): boolean {
         if (!authOptions) return false;
@@ -126,6 +126,7 @@ class KeycloakPlugin {
 
             this.pluginState = {
                 keycloak: keycloak,
+                authOptios: authOptions,
                 accessTokenKey: `${authOptions.appClientId}-accessToken`,
                 refreshTokenKey: `${authOptions.appClientId}-refreshToken`,
                 idTokenKey: `${authOptions.appClientId}-idToken`
@@ -152,7 +153,8 @@ class KeycloakPlugin {
             enableLogging: false,
             refreshToken: LocalStorageUtils.getItem(this.pluginState.refreshTokenKey),
             token: LocalStorageUtils.getItem(this.pluginState.accessTokenKey),
-            idToken: LocalStorageUtils.getItem(this.pluginState.idTokenKey)
+            idToken: LocalStorageUtils.getItem(this.pluginState.idTokenKey),
+            ...this.pluginState.authOptios.keycloakInitOptions
         });
 
         if (authenticated) {
