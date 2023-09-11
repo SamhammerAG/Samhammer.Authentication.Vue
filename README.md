@@ -38,6 +38,7 @@ Auth.initOnce(authOptions)
 | appClientId | The id of the public client used for authentication |
 | authUrl | The base auth url of keycloak (e.g. "https://auth.myserver.de/auth") |
 | realm | Authentication realm used in keycloak |
+| keycloakInitOptions | Object to allow overriding of all settings on keycloakjs.init(). |
 
 ##### InitOnce Return value and Events
 
