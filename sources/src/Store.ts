@@ -34,10 +34,9 @@ export class ChromeStore implements Store {
 
     public async getItem(key: string): Promise<string> {
         const result = await chrome.storage.local.get([key]);
+        const text = result[key];
 
-        console.log(key, result[key]);
-
-        return result[key];
+        return text ? text : "";
     }
 
     public async removeItem(key: string): Promise<void> {
