@@ -10,7 +10,7 @@
     "jsx": "preserve",    
     "noImplicitThis": true,
     "strict": true,    
-    "verbatimModuleSyntax": true,
+    "importsNotUsedAsValues": "error",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
