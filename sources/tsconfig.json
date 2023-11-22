@@ -14,7 +14,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "types": ["node"],
+    "types": ["node", "chrome"],
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "outDir": "./lib",
     "declaration": true

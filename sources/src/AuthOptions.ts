@@ -1,4 +1,5 @@
 import type { KeycloakInitOptions } from "keycloak-js";
+import type { Store } from "./Store";
 
 export interface AuthOptions {
     keycloakInitOptions?: KeycloakInitOptions;
@@ -8,4 +9,5 @@ export interface AuthOptions {
     authUrl?: string;
     realm?: string;
     guestRoles?: string[];
+    store?: Store;
 }

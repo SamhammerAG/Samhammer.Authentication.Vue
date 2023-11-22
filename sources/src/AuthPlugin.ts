@@ -1,10 +1,10 @@
 import Keycloak from "keycloak-js";
 import once from "lodash/once";
 import { includes, throttle, type DebouncedFunc } from "lodash";
-import LocalStorageUtils from "./LocalStorageUtils";
 import { v4 as uuidv4 } from "uuid";
 import type { AuthOptions } from "./AuthOptions";
 import { AuthEvents, AuthEventNames } from "./AuthEvents";
+import StoreProvider from "./StoreProvider";
 
 export class AuthPlugin {
     private authOptions: AuthOptions | undefined;
@@ -32,7 +32,12 @@ export class AuthPlugin {
 
     public initOnce: (authOptions: AuthOptions) => Promise<void> = once(async (authOptions) => {
         this.authOptions = authOptions;
-        const guestAuthenticated = this.guest.init(this.authOptions);
+
+        if (authOptions.store) {
+            StoreProvider.setStore(authOptions.store);
+        }
+
+        const guestAuthenticated = await this.guest.init(this.authOptions);
         if (guestAuthenticated) {
             AuthEvents.emit(AuthEventNames.isGuestAuthenticated);
             return;
@@ -132,14 +137,14 @@ class KeycloakPlugin {
                 idTokenKey: `${authOptions.appClientId}-idToken`
             };
 
-            keycloak.onAuthSuccess = this.setLocalStorage.bind(this);
-            keycloak.onAuthRefreshSuccess = this.setLocalStorage.bind(this);
+            keycloak.onAuthSuccess = this.setStorage.bind(this);
+            keycloak.onAuthRefreshSuccess = this.setStorage.bind(this);
             keycloak.onTokenExpired = this.onTokenExpired.bind(this);
 
             return this.initKeycloak();
         } catch (error) {
             console.error("auth init failed", error);
-            this.clearLocalStorage();
+            await this.clearStorage();
             return false;
         }
     }
@@ -151,9 +156,9 @@ class KeycloakPlugin {
             flow: "standard",
             timeSkew: 0,
             enableLogging: false,
-            refreshToken: LocalStorageUtils.getItem(this.pluginState.refreshTokenKey),
-            token: LocalStorageUtils.getItem(this.pluginState.accessTokenKey),
-            idToken: LocalStorageUtils.getItem(this.pluginState.idTokenKey),
+            refreshToken: await StoreProvider.store.getItem(this.pluginState.refreshTokenKey),
+            token: await StoreProvider.store.getItem(this.pluginState.accessTokenKey),
+            idToken: await StoreProvider.store.getItem(this.pluginState.idTokenKey),
             ...this.pluginState.authOptios.keycloakInitOptions
         });
 
@@ -193,26 +198,26 @@ class KeycloakPlugin {
     public async logout(redirectUri: string): Promise<void> {
         console.debug("logout navigating to keycloak with returnUrl", redirectUri);
 
-        this.clearLocalStorage();
+        await this.clearStorage();
 
         if (!this.pluginState) return;
         await this.pluginState.keycloak.logout({ redirectUri });
     }
 
-    private setLocalStorage(): void {
+    private async setStorage(): Promise<void> {
         if (!this.pluginState) return;
 
-        LocalStorageUtils.setItem(this.pluginState.refreshTokenKey, this.pluginState.keycloak.refreshToken ?? "");
-        LocalStorageUtils.setItem(this.pluginState.accessTokenKey, this.pluginState.keycloak.token ?? "");
-        LocalStorageUtils.setItem(this.pluginState.idTokenKey, this.pluginState.keycloak.idToken ?? "");
+        await StoreProvider.store.setItem(this.pluginState.refreshTokenKey, this.pluginState.keycloak.refreshToken ?? "");
+        await StoreProvider.store.setItem(this.pluginState.accessTokenKey, this.pluginState.keycloak.token ?? "");
+        await StoreProvider.store.setItem(this.pluginState.idTokenKey, this.pluginState.keycloak.idToken ?? "");
     }
 
-    private clearLocalStorage() {
+    private async clearStorage() {
         if (!this.pluginState) return;
 
-        LocalStorageUtils.removeItem(this.pluginState.refreshTokenKey);
-        LocalStorageUtils.removeItem(this.pluginState.accessTokenKey);
-        LocalStorageUtils.removeItem(this.pluginState.idTokenKey);
+        await StoreProvider.store.removeItem(this.pluginState.refreshTokenKey);
+        await StoreProvider.store.removeItem(this.pluginState.accessTokenKey);
+        await StoreProvider.store.removeItem(this.pluginState.idTokenKey);
     }
 
     public async refresh(minValidity: number): Promise<void> {
@@ -251,13 +256,13 @@ class GuestPlugin {
         return this.pluginState?.guestId ?? "";
     }
 
-    public init(authOptions: AuthOptions): boolean {
+    public async init(authOptions: AuthOptions): Promise<boolean> {
         if (!authOptions.guestClientId) {
             return false;
         }
 
         const guestKey = `${authOptions.guestClientId}-guestId`;
-        const guestId = LocalStorageUtils.getItem(guestKey);
+        const guestId = await StoreProvider.store.getItem(guestKey);
         let guestRoles: string[] = [];
 
         if (guestId) {
@@ -274,23 +279,23 @@ class GuestPlugin {
         return this.authenticated;
     }
 
-    public login(authOptions: AuthOptions): void {
+    public async login(authOptions: AuthOptions): Promise<void> {
         console.debug("login guest");
 
         if (!this.pluginState) throw new Error("Init has to be called first");
 
         this.pluginState.guestId = uuidv4();
-        LocalStorageUtils.setItem(this.pluginState.guestKey, this.pluginState.guestId);
+        await StoreProvider.store.setItem(this.pluginState.guestKey, this.pluginState.guestId);
         this.init(authOptions);
         AuthEvents.emit(AuthEventNames.isGuestAuthenticated);
     }
 
-    public logout(): void {
+    public async logout(): Promise<void> {
         console.debug("logout guest");
 
         if (!this.pluginState) return;
 
-        LocalStorageUtils.removeItem(this.pluginState.guestKey);
+        await StoreProvider.store.removeItem(this.pluginState.guestKey);
 
         this.pluginState.guestId = "";
         this.pluginState.guestRoles = [];
