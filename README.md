@@ -32,10 +32,10 @@ Auth.initOnce(authOptions);
 
 | Type        | Name                | Description                                                          |
 | ----------- | ------------------- | -------------------------------------------------------------------- |
-| `required`  | authUrl             | The base auth url of keycloak (e.g. "https://auth.myserver.de/auth") |
-| `required`  | realm               | Authentication realm used in keycloak                                |
 | `guestAuth` | guestClientId       | The store prefix used for guest login                                |
 | `guestAuth` | guestRoles          | The assigned roles when using guest login                            |
+| `userAuth`  | authUrl             | The base auth url of keycloak (e.g. "https://auth.myserver.de/auth") |
+| `userAuth`  | realm               | Authentication realm used in keycloak                                |
 | `userAuth`  | apiClientId         | The client id your api uses (required for role checks)               |
 | `userAuth`  | appClientId         | The id of the public client used for authentication                  |
 | `optional`  | keycloakInitOptions | Object to allow overriding of all settings on keycloakjs.init().     |
@@ -43,7 +43,6 @@ Auth.initOnce(authOptions);
 
 Note:
 
--   `required` This has to be set
 -   `guestAuth` This has to be set when using guest auth
 -   `userAuth` This has to be set when using user auth
 -   `optional` This field can be set if it is required
