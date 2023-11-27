@@ -52,7 +52,7 @@ export class AuthPlugin {
     public async loginGuest(): Promise<void> {
         if (!this.authOptions) throw new Error("Init has to be called first");
 
-        this.guest.login(this.authOptions);
+        await this.guest.login(this.authOptions);
     }
 
     public async login(idp: string): Promise<void> {
@@ -79,7 +79,7 @@ export class AuthPlugin {
 
     public async logout(redirectUri: string): Promise<void> {
         if (this.guest.authenticated) {
-            this.guest.logout();
+            await this.guest.logout();
             return;
         }
 
@@ -171,7 +171,7 @@ class KeycloakPlugin {
 
     private async onTokenExpired(): Promise<void> {
         // force refresh
-        this.refresh(-1);
+        await this.refresh(-1);
     }
 
     public async login(redirectUri: string, idp: string): Promise<void> {
@@ -286,7 +286,7 @@ class GuestPlugin {
 
         this.pluginState.guestId = uuidv4();
         await StoreProvider.store.setItem(this.pluginState.guestKey, this.pluginState.guestId);
-        this.init(authOptions);
+        await this.init(authOptions);
         AuthEvents.emit(AuthEventNames.isGuestAuthenticated);
     }
 
