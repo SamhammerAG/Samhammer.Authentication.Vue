@@ -88,12 +88,12 @@ export class AuthPlugin {
 }
 
 class KeycloakPlugin {
-    private pluginState: { keycloak: Keycloak; authOptios: AuthOptions; accessTokenKey: string; refreshTokenKey: string; idTokenKey: string } | undefined;
+    private pluginState: { keycloak?: Keycloak; authOptions: AuthOptions; accessTokenKey: string; refreshTokenKey: string; idTokenKey: string } | undefined;
 
     public hasRole(authOptions: AuthOptions | undefined, roleName: string, apiClientId?: string): boolean {
         if (!authOptions) return false;
 
-        if (this.pluginState) {
+        if (this.pluginState && this.pluginState.keycloak) {
             const resource = !apiClientId ? authOptions.apiClientId : apiClientId;
             return this.pluginState.keycloak.hasResourceRole(roleName, resource);
         }
@@ -123,23 +123,12 @@ class KeycloakPlugin {
                 return false;
             }
 
-            const keycloak = new Keycloak({
-                url: authOptions.authUrl,
-                realm: authOptions.realm,
-                clientId: authOptions.appClientId
-            });
-
             this.pluginState = {
-                keycloak: keycloak,
-                authOptios: authOptions,
+                authOptions: authOptions,
                 accessTokenKey: `${authOptions.appClientId}-accessToken`,
                 refreshTokenKey: `${authOptions.appClientId}-refreshToken`,
                 idTokenKey: `${authOptions.appClientId}-idToken`
             };
-
-            keycloak.onAuthSuccess = this.setStorage.bind(this);
-            keycloak.onAuthRefreshSuccess = this.setStorage.bind(this);
-            keycloak.onTokenExpired = this.onTokenExpired.bind(this);
 
             return this.initKeycloak();
         } catch (error) {
@@ -152,6 +141,13 @@ class KeycloakPlugin {
     public async initKeycloak(): Promise<boolean> {
         if (!this.pluginState) throw new Error("Init has to be called first");
 
+        delete this.pluginState.keycloak;
+
+        this.pluginState.keycloak = this.getKeycloakInstance();
+        this.pluginState.keycloak.onAuthSuccess = this.setStorage.bind(this);
+        this.pluginState.keycloak.onAuthRefreshSuccess = this.setStorage.bind(this);
+        this.pluginState.keycloak.onTokenExpired = this.onTokenExpired.bind(this);
+
         const authenticated: boolean = await this.pluginState.keycloak.init({
             flow: "standard",
             timeSkew: 0,
@@ -159,7 +155,7 @@ class KeycloakPlugin {
             refreshToken: await StoreProvider.store.getItem(this.pluginState.refreshTokenKey),
             token: await StoreProvider.store.getItem(this.pluginState.accessTokenKey),
             idToken: await StoreProvider.store.getItem(this.pluginState.idTokenKey),
-            ...this.pluginState.authOptios.keycloakInitOptions
+            ...this.pluginState.authOptions.keycloakInitOptions
         });
 
         if (authenticated) {
@@ -177,21 +173,21 @@ class KeycloakPlugin {
     public async login(redirectUri: string, idp: string): Promise<void> {
         console.debug("login navigating to keycloak with returnUrl", redirectUri);
 
-        if (!this.pluginState) throw new Error("Init has to be called first");
+        if (!this.pluginState || !this.pluginState?.keycloak) throw new Error("Init has to be called first");
         await this.pluginState.keycloak.login({ redirectUri, idpHint: idp });
     }
 
     public createLoginUrl(redirectUri: string, idp: string): string {
         console.debug("create loginUrl to keycloak with returnUrl", redirectUri);
 
-        if (!this.pluginState) throw new Error("Init has to be called first");
+        if (!this.pluginState || !this.pluginState.keycloak) throw new Error("Init has to be called first");
         return this.pluginState.keycloak.createLoginUrl({ redirectUri, idpHint: idp });
     }
 
     public createLogoutUrl(redirectUri: string): string {
         console.debug("create logoutUrl to keycloak with returnUrl", redirectUri);
 
-        if (!this.pluginState) throw new Error("Init has to be called first");
+        if (!this.pluginState || !this.pluginState.keycloak) throw new Error("Init has to be called first");
         return this.pluginState.keycloak.createLogoutUrl({ redirectUri });
     }
 
@@ -200,12 +196,12 @@ class KeycloakPlugin {
 
         await this.clearStorage();
 
-        if (!this.pluginState) return;
+        if (!this.pluginState || !this.pluginState.keycloak) return;
         await this.pluginState.keycloak.logout({ redirectUri });
     }
 
     private async setStorage(): Promise<void> {
-        if (!this.pluginState) return;
+        if (!this.pluginState || !this.pluginState.keycloak) return;
 
         await StoreProvider.store.setItem(this.pluginState.refreshTokenKey, this.pluginState.keycloak.refreshToken ?? "");
         await StoreProvider.store.setItem(this.pluginState.accessTokenKey, this.pluginState.keycloak.token ?? "");
@@ -222,7 +218,7 @@ class KeycloakPlugin {
 
     public async refresh(minValidity: number): Promise<void> {
         try {
-            if (!this.pluginState) return;
+            if (!this.pluginState || !this.pluginState.keycloak) return;
 
             const successful: boolean = await this.pluginState.keycloak.updateToken(minValidity);
 
@@ -237,6 +233,20 @@ class KeycloakPlugin {
     // this method ensures that we have only one refresh call even when it gets executed multiple times in paralell
     // NOTE: time for 'throttle wait' (ms) must be lower then 'token minValidity' (sec)
     private refreshSingle: DebouncedFunc<() => Promise<void>> = throttle(() => this.refresh(10), 5000, { trailing: false });
+
+    public getKeycloakInstance(): Keycloak {
+        const state = this.pluginState;
+
+        if (!state || !state.authOptions.appClientId || !state.authOptions.authUrl || !state.authOptions.realm) {
+            throw new Error("AuthOptions need to be set correctly");
+        }
+
+        return new Keycloak({
+            url: state.authOptions.authUrl,
+            realm: state.authOptions.realm,
+            clientId: state.authOptions.appClientId
+        });
+    }
 }
 
 class GuestPlugin {
