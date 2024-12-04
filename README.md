@@ -167,6 +167,6 @@ class CustomStore implements Store {
 After that add the store in the authOptions.
 
 ## How to publish
-
--   Increase version by running Version workflow on github or 'yarn version' command on local machine. This updates package.json and creates tag
--   Check github action to validated, that package was released to npm registry.
+- Create & Push a tag with new version number
+- The CICD actions will take this version number for npm package automatically
+- Check github action to validated, that package was released to npm registry.
