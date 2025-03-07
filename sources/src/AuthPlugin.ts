@@ -132,11 +132,11 @@ class KeycloakPlugin {
             };
 
             AuthLogger.log("Init keycloak");
-
             return await this.initKeycloak();
         } catch (error) {
-            AuthLogger.log("Retry init keycloak without tokens", error);
+            AuthLogger.warn("Init keycloak failed", error);
             await this.clearStorage();
+            AuthLogger.log("Retry init keycloak without tokens");
             return await this.initKeycloak();
         }
     }
@@ -161,9 +161,7 @@ class KeycloakPlugin {
             ...this.pluginState.authOptions.keycloakInitOptions
         });
 
-        if (authenticated) {
-            AuthLogger.debug("Authenticated keycloak");
-        }
+        AuthLogger.debug(authenticated ? "Authenticated keycloak" : "Not authenticated keycloak");
 
         return authenticated;
     }
@@ -229,7 +227,7 @@ class KeycloakPlugin {
                 AuthLogger.debug("Token refreshed");
             }
         } catch (error) {
-            AuthLogger.error("Token refresh failed", error || "Token may be empty");
+            AuthLogger.error("Token refresh failed", error || "token may be empty");
         }
     }
 
@@ -281,6 +279,8 @@ class GuestPlugin {
         if (guestId) {
             guestRoles = authOptions.guestRoles || ["User"];
             AuthLogger.debug("Authenticated guest");
+        } else {
+            AuthLogger.debug("Not authenticated guest");
         }
 
         this.pluginState = {
