@@ -136,6 +136,7 @@ class KeycloakPlugin {
         } catch (error) {
             AuthLogger.warn("Init keycloak failed", error);
             await this.clearStorage();
+
             AuthLogger.log("Retry init keycloak without tokens");
             return await this.initKeycloak();
         }
