@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import type { AuthOptions } from "./AuthOptions";
 import { AuthEvents, AuthEventNames } from "./AuthEvents";
 import StoreProvider from "./StoreProvider";
+import AuthLogger from "./AuthLogger";
 
 export class AuthPlugin {
     private authOptions: AuthOptions | undefined;
@@ -130,9 +131,11 @@ class KeycloakPlugin {
                 idTokenKey: `${authOptions.appClientId}-idToken`
             };
 
+            AuthLogger.log("Init keycloak");
+
             return await this.initKeycloak();
         } catch (error) {
-            console.error("auth init failed", error);
+            AuthLogger.log("Retry init keycloak without tokens", error);
             await this.clearStorage();
             return await this.initKeycloak();
         }
@@ -159,7 +162,7 @@ class KeycloakPlugin {
         });
 
         if (authenticated) {
-            console.debug("authenticated keycloak");
+            AuthLogger.debug("Authenticated keycloak");
         }
 
         return authenticated;
@@ -171,28 +174,28 @@ class KeycloakPlugin {
     }
 
     public async login(redirectUri: string, idp: string): Promise<void> {
-        console.debug("login navigating to keycloak with returnUrl", redirectUri);
+        AuthLogger.debug("Login navigating to keycloak with returnUrl", redirectUri);
 
         if (!this.pluginState || !this.pluginState?.keycloak) throw new Error("Init has to be called first");
         await this.pluginState.keycloak.login({ redirectUri, idpHint: idp });
     }
 
     public createLoginUrl(redirectUri: string, idp: string): string {
-        console.debug("create loginUrl to keycloak with returnUrl", redirectUri);
+        AuthLogger.debug("Create loginUrl to keycloak with returnUrl", redirectUri);
 
         if (!this.pluginState || !this.pluginState.keycloak) throw new Error("Init has to be called first");
         return this.pluginState.keycloak.createLoginUrl({ redirectUri, idpHint: idp });
     }
 
     public createLogoutUrl(redirectUri: string): string {
-        console.debug("create logoutUrl to keycloak with returnUrl", redirectUri);
+        AuthLogger.debug("Create logoutUrl to keycloak with returnUrl", redirectUri);
 
         if (!this.pluginState || !this.pluginState.keycloak) throw new Error("Init has to be called first");
         return this.pluginState.keycloak.createLogoutUrl({ redirectUri });
     }
 
     public async logout(redirectUri: string): Promise<void> {
-        console.debug("logout navigating to keycloak with returnUrl", redirectUri);
+        AuthLogger.debug("Logout navigating to keycloak with returnUrl", redirectUri);
 
         await this.clearStorage();
 
@@ -223,10 +226,10 @@ class KeycloakPlugin {
             const successful: boolean = await this.pluginState.keycloak.updateToken(minValidity);
 
             if (successful) {
-                console.debug("token refreshed");
+                AuthLogger.debug("Token refreshed");
             }
         } catch (error) {
-            console.error("token refresh failed", error || "token may be empty");
+            AuthLogger.error("Token refresh failed", error || "Token may be empty");
         }
     }
 
@@ -277,7 +280,7 @@ class GuestPlugin {
 
         if (guestId) {
             guestRoles = authOptions.guestRoles || ["User"];
-            console.debug("authenticated guest");
+            AuthLogger.debug("Authenticated guest");
         }
 
         this.pluginState = {
@@ -290,7 +293,7 @@ class GuestPlugin {
     }
 
     public async login(authOptions: AuthOptions): Promise<void> {
-        console.debug("login guest");
+        AuthLogger.debug("Login guest");
 
         if (!this.pluginState) throw new Error("Init has to be called first");
 
@@ -301,7 +304,7 @@ class GuestPlugin {
     }
 
     public async logout(): Promise<void> {
-        console.debug("logout guest");
+        AuthLogger.debug("Logout guest");
 
         if (!this.pluginState) return;
 
