@@ -130,11 +130,11 @@ class KeycloakPlugin {
                 idTokenKey: `${authOptions.appClientId}-idToken`
             };
 
-            return this.initKeycloak();
+            return await this.initKeycloak();
         } catch (error) {
             console.error("auth init failed", error);
             await this.clearStorage();
-            return false;
+            return await this.initKeycloak();
         }
     }
 
