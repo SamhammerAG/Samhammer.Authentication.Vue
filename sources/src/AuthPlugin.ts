@@ -86,6 +86,10 @@ export class AuthPlugin {
 
         await this.keycloak.logout(redirectUri);
     }
+
+    public async clearStorage(): Promise<void> {
+        await this.keycloak.clearStorage();
+    }
 }
 
 class KeycloakPlugin {
@@ -210,7 +214,7 @@ class KeycloakPlugin {
         await StoreProvider.store.setItem(this.pluginState.idTokenKey, this.pluginState.keycloak.idToken ?? "");
     }
 
-    private async clearStorage() {
+    public async clearStorage() {
         if (!this.pluginState) return;
 
         await StoreProvider.store.removeItem(this.pluginState.refreshTokenKey);
