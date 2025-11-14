@@ -23,7 +23,7 @@
     "@rushstack/eslint-patch": "^1.2.0",
     "@types/chrome": "^0.0.251",
     "@types/lodash": "^4.14.191",
-    "@types/node": "^18.15.1",
+    "@types/node": "^20.19.25",
     "@types/uuid": "^9.0.1",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
