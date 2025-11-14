@@ -25,6 +25,7 @@ jobs:
       - run: echo "::remove-matcher owner=eslint-stylish::"
       - run: node --version
       - run: yarn --version
+      - run: npm --version
       - run: "yarn install --frozen-lockfile"
       - uses: reviewdog/action-eslint@v1
         if: github.event_name != 'workflow_dispatch'
