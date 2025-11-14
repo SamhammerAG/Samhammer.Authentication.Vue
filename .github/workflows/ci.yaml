@@ -20,6 +20,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
+      - run: npm install -g npm@11.5 # Ensure npm 11.5.1 or later for trusted publishing
       - run: echo "::remove-matcher owner=tsc::"
       - run: echo "::remove-matcher owner=eslint-compact::"
       - run: echo "::remove-matcher owner=eslint-stylish::"
