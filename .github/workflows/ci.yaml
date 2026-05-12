@@ -12,29 +12,22 @@ jobs:
     name: ci
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    defaults:
-      run:
-        working-directory: sources
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm install -g npm@11.5 # Ensure npm 11.5.1 or later for trusted publishing
+      - uses: actions/checkout@v6
+      - uses: volta-cli/action@v5
       - run: echo "::remove-matcher owner=tsc::"
       - run: echo "::remove-matcher owner=eslint-compact::"
       - run: echo "::remove-matcher owner=eslint-stylish::"
       - run: node --version
       - run: yarn --version
       - run: npm --version
-      - run: "yarn install --frozen-lockfile"
+      - run: yarn install --immutable
       - uses: reviewdog/action-eslint@v1
         if: github.event_name != 'workflow_dispatch'
         with:
           github_token: ${{ github.token }}
           reporter: github-check
-          eslint_flags: './**/*.{ts,js}'
-          workdir: sources
+          eslint_flags: "./**/*.{ts,js}"
       - run: yarn build
       - if: startsWith(github.ref, 'refs/tags/')
         name: set package.json version by tag
