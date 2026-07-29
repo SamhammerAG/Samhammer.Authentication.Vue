@@ -1,6 +1,5 @@
 import Keycloak from "keycloak-js";
-import once from "lodash/once";
-import { includes, throttle, type DebouncedFunc } from "lodash";
+import { once, includes, throttle, type DebouncedFunc } from "lodash-es";
 import { v4 as uuidv4 } from "uuid";
 import type { AuthOptions } from "./AuthOptions";
 import { AuthEvents, AuthEventNames } from "./AuthEvents";
