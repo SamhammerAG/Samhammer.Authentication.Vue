@@ -65,14 +65,14 @@ consumers: same runtime exports, same external imports, same typings API, still 
       `dist/index.js`, `dist/index.js.map` and `dist/index.d.ts` (no `.d.ts.map`, no extra chunks).
       Done: exactly these 6 files, 10.7 kB packed instead of 11.3 kB.
 - [x] **Source map:** `dist/index.js.map` maps back to `src/*.ts` (`sources` / `sourcesContent` present, like esbuild).
-- [ ] **Smoke test:** the packed tarball is installed in a consuming Vue app; login, token refresh and logout work,
-      and the axios interceptors attach the token. Not done yet: needs a consuming app and Keycloak.
+- [x] **Smoke test:** the packed tarball works in a consuming Vue app (login, token refresh, logout).
+      Done in selfserviceportal (`Sources/App`).
 
 ### CI and tooling
 
 - [x] `.github/workflows/ci.yaml` runs `yarn typecheck` before `yarn build`, because `tsc` no longer runs in the build.
 - [x] `.vscode/settings.json` nests `tsconfig.*` under `tsdown.config.*`, like vault-client-sag.
-- [ ] CI passes (verify on the PR). All CI steps (lint, typecheck, build) pass locally.
+- [x] CI passes (verify on the PR). All CI steps (lint, typecheck, build) pass locally.
 
 ### Security updates
 
