@@ -23,7 +23,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc --emitDeclarationOnly && esbuild ./src/index.ts --bundle --packages=external --sourcemap --format=esm --target=esnext --outdir=lib --metafile=meta.json",
-    "format": "prettier --write --parser typescript ./src",
+    "format": "prettier --write --experimental-cli src/",
     "lint": "eslint ."
   },
   "devDependencies": {
@@ -37,7 +37,7 @@
     "eslint-plugin-import-x": "^4.17.1",
     "globals": "^17.13.0",
     "jiti": "^2.7.0",
-    "prettier": "^2.7.1",
+    "prettier": "^3.9.10",
     "typescript": "^4.7.4",
     "typescript-eslint": "^8.72.0"
   },

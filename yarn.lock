@@ -370,7 +370,7 @@ __metadata:
     jiti: "npm:^2.7.0"
     keycloak-js: "npm:25.0.2"
     lodash-es: "npm:^4.18.1"
-    prettier: "npm:^2.7.1"
+    prettier: "npm:^3.9.10"
     typescript: "npm:^4.7.4"
     typescript-eslint: "npm:^8.72.0"
     uuid: "npm:^14.0.1"
@@ -1713,12 +1713,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.7.1":
-  version: 2.8.4
-  resolution: "prettier@npm:2.8.4"
+"prettier@npm:^3.9.10":
+  version: 3.9.10
+  resolution: "prettier@npm:3.9.10"
   bin:
-    prettier: bin-prettier.js
-  checksum: 10c0/d272cbd842d466fbd10e7efc22fd99ebdbfb78c06c0fe8ffdaa86d50883e7b3d3fba822a86fd8a1c851ca91ec5dfc867e612071c9c54d0e29954f20954262dcb
+    prettier: bin/prettier.cjs
+  checksum: 10c0/0b3531593aa6fb36ac6baf629cb058bda472c59a6938774f931fe55283a07c62e6f56e621b043a82d8a3e21fc284c08c34f9e539fc70072635f79b7bae1a1067
   languageName: node
   linkType: hard
 
