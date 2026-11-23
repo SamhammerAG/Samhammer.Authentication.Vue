@@ -3,16 +3,16 @@
   "version": "0.0.0",
   "description": "Keycloak authentication for VueJS projects",
   "type": "module",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./lib/index.d.ts",
-      "import": "./lib/index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
   },
   "files": [
-    "lib/**/*"
+    "dist/**/*"
   ],
   "repository": "https://github.com/SamhammerAG/Samhammer.Authentication.Vue",
   "author": "SamhammerAG (https://www.samhammer.de/)",
@@ -22,7 +22,7 @@
   "homepage": "https://github.com/SamhammerAG/Samhammer.Authentication.Vue#readme",
   "license": "MIT",
   "scripts": {
-    "build": "tsc --emitDeclarationOnly && esbuild ./src/index.ts --bundle --packages=external --sourcemap --format=esm --target=esnext --outdir=lib --metafile=meta.json",
+    "build": "tsc --emitDeclarationOnly && esbuild ./src/index.ts --bundle --packages=external --sourcemap --format=esm --target=esnext --outdir=dist --metafile=meta.json",
     "format": "prettier --write --experimental-cli src/",
     "lint": "eslint ."
   },

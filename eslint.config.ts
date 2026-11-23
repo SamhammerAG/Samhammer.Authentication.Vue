@@ -6,7 +6,7 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default defineConfig(
-    globalIgnores(["lib/", ".yarn/"]),
+    globalIgnores(["dist/", ".yarn/"]),
 
     {
         name: "app/typescript",
