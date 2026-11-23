@@ -14,22 +14,22 @@ Runtime code only changes where new rules require it.
 
 ## Acceptance criteria
 
-- [ ] `eslint` is updated to `^10` and `@eslint/js` `^10` is added.
-- [ ] `.eslintrc.cjs`, `.eslintsag.cjs` and `.eslintignore` are replaced by a single `eslint.config.ts` (loaded via `jiti`).
-- [ ] `@rushstack/eslint-patch`, `@typescript-eslint/eslint-plugin`, `@typescript-eslint/parser`, `eslint-plugin-import`
+- [x] `eslint` is updated to `^10` and `@eslint/js` `^10` is added.
+- [x] `.eslintrc.cjs`, `.eslintsag.cjs` and `.eslintignore` are replaced by a single `eslint.config.ts` (loaded via `jiti`).
+- [x] `@rushstack/eslint-patch`, `@typescript-eslint/eslint-plugin`, `@typescript-eslint/parser`, `eslint-plugin-import`
       and `eslint-plugin-prettier` are removed. `typescript-eslint` (v8), `eslint-plugin-import-x`, `globals` and `jiti` are added.
-- [ ] `eslint-config-prettier` is updated to `^10` and used via `eslint-config-prettier/flat`.
-- [ ] All current SAG rules are still active with the same severity.
-- [ ] The build output folder and `.yarn/` are ignored by ESLint.
-- [ ] The `lint` script is `eslint .` (no `--fix`). New findings are fixed or turned off with a short justification.
-- [ ] `prettier` is updated to `^3.9`, the `format` script is `prettier --write --experimental-cli src/`.
-- [ ] `typescript` is updated to `~6.0.3` and `tsconfig.json` is cleaned up (see Technical details) without deprecation errors.
-- [ ] `yarn build` produces the same files as before (`index.js`, `index.js.map`, `index.d.ts`, … directly in the output
+- [x] `eslint-config-prettier` is updated to `^10` and used via `eslint-config-prettier/flat`.
+- [x] All current SAG rules are still active with the same severity.
+- [x] The build output folder and `.yarn/` are ignored by ESLint.
+- [x] The `lint` script is `eslint .` (no `--fix`). New findings are fixed or turned off with a short justification.
+- [x] `prettier` is updated to `^3.9`, the `format` script is `prettier --write --experimental-cli src/`.
+- [x] `typescript` is updated to `~6.0.3` and `tsconfig.json` is cleaned up (see Technical details) without deprecation errors.
+- [x] `yarn build` produces the same files as before (`index.js`, `index.js.map`, `index.d.ts`, … directly in the output
       folder, not in `src/` below it), with equivalent content.
-- [ ] VS Code "fix all on save" works with the flat config; file nesting is aligned with the other `sag-js` projects.
-- [ ] The CI workflow (reviewdog ESLint, build) passes with ESLint 10.
-- [ ] The build output folder is renamed from `lib/` to `dist/` (see Technical details).
-- [ ] `AGENTS.md`, `CLAUDE.md` and `.plans/AGENTS.md` are added like in SocketServer.
+- [x] VS Code "fix all on save" works with the flat config; file nesting is aligned with the other `sag-js` projects.
+- [ ] The CI workflow (reviewdog ESLint, build) passes with ESLint 10 (verify on the PR).
+- [x] The build output folder is renamed from `lib/` to `dist/` (see Technical details).
+- [x] `AGENTS.md`, `CLAUDE.md` and `.plans/AGENTS.md` are added like in SocketServer.
 
 ## Technical details
 
@@ -47,6 +47,7 @@ Runtime code only changes where new rules require it.
 | – | `globals`, `jiti@^2` |
 
 Use the same versions as in SocketServer, unless the `npmMinimalAgeGate` in `.yarnrc.yml` blocks them. Run `yarn dedupe` afterwards.
+Result: all SocketServer versions installed. `yarn add` saves exact versions here, so the `^` / `~` ranges were added by hand.
 `esbuild`, `@types/*` and the runtime dependencies are not part of this update.
 
 ### `eslint.config.ts`
@@ -80,6 +81,7 @@ Check that Prettier 3 doesn't change `src/` (changed defaults such as `trailingC
   `useDefineForClassFields`, `noImplicitThis` (part of `strict`), `jsx`, the `src/**/*.tsx` include, `exclude`.
 - Verify by building before and after the change and diffing the output folder (`.d.ts` files and the esbuild bundle).
   Expect differences in line endings only (TS 6 emits LF).
+  Result: the esbuild bundle and sourcemap are byte-identical, the `.d.ts` files differ in line endings only.
 
 ### VS Code
 
@@ -88,9 +90,9 @@ Check that Prettier 3 doesn't change `src/` (changed defaults such as `trailingC
 
 ### CI (`.github/workflows/ci.yaml`)
 
-- `reviewdog/action-eslint` currently passes `eslint_flags: "--ext .ts src"`. Flat config no longer supports `--ext`, so this
-  must change to `src` (the `files` patterns in `eslint.config.ts` choose the extensions). Verify on the PR that reviewdog
-  works with ESLint 10; if it doesn't, replace it with a plain `yarn lint` step.
+- `reviewdog/action-eslint` passed `eslint_flags: "--ext .ts src"`. ESLint 10 still accepts `--ext` (re-added in 9.21),
+  but with flat config it is redundant, because the `files` patterns in `eslint.config.ts` choose the extensions, so the flag
+  is now `src`. Verify on the PR that reviewdog works with ESLint 10; if it doesn't, replace it with a plain `yarn lint` step.
 - No separate typecheck step needed: `yarn build` runs `tsc` and fails on type errors.
 
 ### Output folder `lib/` → `dist/`
