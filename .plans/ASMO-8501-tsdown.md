@@ -74,6 +74,17 @@ consumers: same runtime exports, same external imports, same typings API, still 
 - [x] `.vscode/settings.json` nests `tsconfig.*` under `tsdown.config.*`, like vault-client-sag.
 - [ ] CI passes (verify on the PR). All CI steps (lint, typecheck, build) pass locally.
 
+### Security updates
+
+- [x] `yarn npm audit --environment production --recursive` reports no advisories. Done: `axios` 1.18.1 → 1.21.0
+      (`^1.21.0`; 12 advisories, fixed in 1.20.0) and `follow-redirects` 1.16.0 → 1.16.3 (3 advisories, refreshed
+      within axios' range with `yarn up -R`). `dist/` does not change, because `axios` is only imported as a type.
+- [ ] Dev advisories from `yarn npm audit --all --recursive` are fixed where possible. Still open: `minimatch`
+      10.2.6 (moderate, ESLint only). The fix needs `eslint` 10.15.0 (needs `minimatch ^11.0.5`),
+      `@eslint/config-array` 0.23.6 and `@typescript-eslint/typescript-estree` 8.73.0, which are all younger than the
+      14-day age gate (earliest ~2026-11-30). Then run `yarn up eslint@^10.15.0`,
+      `yarn up -R @eslint/config-array typescript-eslint` and `yarn dedupe`.
+
 ## Technical details
 
 ### `tsdown.config.mts`
@@ -167,4 +178,11 @@ Add `"tsdown.config.*": "tsconfig.*"` to `explorer.fileNesting.patterns` (vault-
 ### Out of scope
 
 Vitest, the ESM switch (already `"type": "module"`), the Node/Volta version, updating `@types/chrome` or runtime
-dependencies, `publint` / `attw` in the build.
+dependencies beyond the security fixes, `publint` / `attw` in the build.
+
+### Security updates
+
+Same approach as vault-client-sag (MET-5031): only versions older than the 14-day `npmMinimalAgeGate`. `yarn up`
+saves exact versions in this repo, so the `^` range for `axios` is set by hand. `axios` stays in `dependencies`
+(it is part of the public typings via `AxiosInstance`); raising the lower bound to `^1.21.0` keeps consumers from
+resolving a vulnerable version through this package.
