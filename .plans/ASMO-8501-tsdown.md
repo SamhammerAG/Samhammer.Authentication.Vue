@@ -21,48 +21,58 @@ consumers: same runtime exports, same external imports, same typings API, still 
 
 ### Baseline (before switching)
 
-- [ ] A baseline of the current esbuild build is saved outside the repo (e.g. in a scratch folder): `dist/` after a
+- [x] A baseline of the current esbuild build is saved outside the repo (e.g. in a scratch folder): `dist/` after a
       clean build, the `npm pack --dry-run` file list, raw and gzip size of `dist/index.js`, and the
-      `esbuild --analyze` output.
+      `esbuild --analyze` output. Done: 10 files in `dist/` (8 `.d.ts`, `index.js`, `index.js.map`); `index.js` is
+      12,686 B raw / 2,782 B gzip, and `AuthPlugin.ts` is 75% of it.
 
 ### tsdown
 
-- [ ] `esbuild` is removed from `devDependencies`. `tsdown` is added as `~0.23.5` (same as vault-client-sag; it is
+- [x] `esbuild` is removed from `devDependencies`. `tsdown` is added as `~0.23.5` (same as vault-client-sag; it is
       still 0.x, so pinned to the minor). The version passes the `npmMinimalAgeGate`.
-- [ ] `tsdown.config.mts` is added (see Technical details) and `build` is changed to `tsdown`.
-- [ ] `typecheck: tsc` is added. `tsconfig.json` gets `noEmit: true`; `outDir`, `declaration` and `rootDir` are
-      removed, as long as tsdown still emits the declarations without them.
-- [ ] `--metafile=meta.json` is gone, `meta.json` is removed from `.gitignore` and the local `meta.json` is deleted.
-- [ ] `main` and `exports` in `package.json` are unchanged (`dist/index.js`, `dist/index.d.ts`). `typings` is renamed
+      Done: `yarn add -D tsdown@~0.23.5` kept the range; the lockfile resolves 0.23.7 (Rolldown 1.3.1).
+- [x] `tsdown.config.mts` is added (see Technical details) and `build` is changed to `tsdown`.
+- [x] `typecheck: tsc` is added. `tsconfig.json` gets `noEmit: true`; `outDir`, `declaration` and `rootDir` are
+      removed, as long as tsdown still emits the declarations without them. Done: none of them is needed.
+- [x] `--metafile=meta.json` is gone, `meta.json` is removed from `.gitignore` and the local `meta.json` is deleted.
+- [x] `main` and `exports` in `package.json` are unchanged (`dist/index.js`, `dist/index.d.ts`). `typings` is renamed
       to `types` (same value), like in vault-client-sag.
-- [ ] `yarn dedupe` is run, so esbuild leftovers leave `yarn.lock` (tsdown does not depend on esbuild).
+- [x] `yarn dedupe` is run, so esbuild leftovers leave `yarn.lock` (tsdown does not depend on esbuild).
+      Done: `yarn.lock` has no `esbuild` entry any more.
 
 ### Output compared with the baseline
 
-- [ ] **External imports:** `dist/index.js` imports exactly the same bare specifiers as before (`axios` is type-only
+- [x] **External imports:** `dist/index.js` imports exactly the same bare specifiers as before (`axios` is type-only
       and does not appear at runtime; `emittery`, `keycloak-js`, `lodash-es`, `uuid`). None of them is bundled.
-- [ ] **Runtime exports:** `dist/index.js` exports the same names as before (`default`, `AuthEventNames`,
+      Done: the same four imports; only the local alias changed (`v4 as uuidv4` → `v4`).
+- [x] **Runtime exports:** `dist/index.js` exports the same names as before (`default`, `AuthEventNames`,
       `AuthEvents`, `AxiosAuthInterceptor`, `LocalStore`, `ChromeStore`), checked by importing the built file.
-- [ ] **Typings:** the 8 `.d.ts` files become one bundled `dist/index.d.ts` with the same public API. A small
+      Done: `import("./dist/index.js")` in Node 24 returns these six names; the circular import loads fine.
+- [x] **Typings:** the 8 `.d.ts` files become one bundled `dist/index.d.ts` with the same public API. A small
       consumer `.ts` file that uses the default export, `AuthOptions`, `Store`, `LocalStore`, `ChromeStore`,
       `AuthEvents` / `AuthEventNames` and `AxiosAuthInterceptor` type-checks against both the old and the new output.
-- [ ] **Types resolution:** `attw --pack --profile esm-only` reports no problems (run once by hand with `yarn dlx`,
-      not added to the config, see Technical details).
-- [ ] **No `@types/chrome` leak:** `dist/index.d.ts` has no `/// <reference types="chrome" />` and no `chrome.*`
-      type, so consumers without `@types/chrome` still compile (same as today).
-- [ ] **Size:** raw and gzip size of `dist/index.js` are comparable to the baseline (no dependency inlined, no
-      helper bloat). Differences are explained in this plan.
-- [ ] **Package content:** `npm pack --dry-run` lists only `LICENSE`, `README.md`, `package.json`,
+      Done: checked with `strict`, `skipLibCheck: false` and `types: []`; both pass.
+- [x] **Types resolution:** `attw --pack --profile esm-only` reports no problems (run once by hand with `yarn dlx`,
+      not added to the config, see Technical details). Done: `node16 (from ESM)` and `bundler` are green; the CJS
+      warning is ignored by the profile, as intended.
+- [x] **No `@types/chrome` leak:** `dist/index.d.ts` has no `/// <reference types="chrome" />` and no `chrome.*`
+      type, so consumers without `@types/chrome` still compile (same as today). Done: the consumer check above ran
+      with `types: []`.
+- [x] **Size:** raw and gzip size of `dist/index.js` are comparable to the baseline (no dependency inlined, no
+      helper bloat). Differences are explained in this plan. Done: 11,309 B raw / 2,554 B gzip (−11% / −8%).
+      Rolldown prints the same code more compactly.
+- [x] **Package content:** `npm pack --dry-run` lists only `LICENSE`, `README.md`, `package.json`,
       `dist/index.js`, `dist/index.js.map` and `dist/index.d.ts` (no `.d.ts.map`, no extra chunks).
-- [ ] **Source map:** `dist/index.js.map` maps back to `src/*.ts` (`sources` / `sourcesContent` present, like esbuild).
+      Done: exactly these 6 files, 10.7 kB packed instead of 11.3 kB.
+- [x] **Source map:** `dist/index.js.map` maps back to `src/*.ts` (`sources` / `sourcesContent` present, like esbuild).
 - [ ] **Smoke test:** the packed tarball is installed in a consuming Vue app; login, token refresh and logout work,
-      and the axios interceptors attach the token.
+      and the axios interceptors attach the token. Not done yet: needs a consuming app and Keycloak.
 
 ### CI and tooling
 
-- [ ] `.github/workflows/ci.yaml` runs `yarn typecheck` before `yarn build`, because `tsc` no longer runs in the build.
-- [ ] `.vscode/settings.json` nests `tsconfig.*` under `tsdown.config.*`, like vault-client-sag.
-- [ ] CI passes (verify on the PR).
+- [x] `.github/workflows/ci.yaml` runs `yarn typecheck` before `yarn build`, because `tsc` no longer runs in the build.
+- [x] `.vscode/settings.json` nests `tsconfig.*` under `tsdown.config.*`, like vault-client-sag.
+- [ ] CI passes (verify on the PR). All CI steps (lint, typecheck, build) pass locally.
 
 ## Technical details
 
