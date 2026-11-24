@@ -4,7 +4,7 @@
   "description": "Keycloak authentication for VueJS projects",
   "type": "module",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -22,27 +22,28 @@
   "homepage": "https://github.com/SamhammerAG/Samhammer.Authentication.Vue#readme",
   "license": "MIT",
   "scripts": {
-    "build": "tsc --emitDeclarationOnly && esbuild ./src/index.ts --bundle --packages=external --sourcemap --format=esm --target=esnext --outdir=dist --metafile=meta.json",
+    "build": "tsdown",
     "format": "prettier --write --experimental-cli src/",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "typecheck": "tsc"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/chrome": "^0.0.251",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^24.12.2",
-    "esbuild": "^0.28.1",
     "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import-x": "^4.17.1",
     "globals": "^17.13.0",
     "jiti": "^2.7.0",
     "prettier": "^3.9.10",
+    "tsdown": "~0.23.5",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.72.0"
   },
   "dependencies": {
-    "axios": "^1.18.1",
+    "axios": "^1.21.0",
     "emittery": "^1.0.1",
     "keycloak-js": "25.0.2",
     "lodash-es": "^4.18.1",

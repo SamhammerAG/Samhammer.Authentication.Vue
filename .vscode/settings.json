@@ -16,6 +16,7 @@
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
     "package.json": ".yarnrc*, yarn*, .eslint*, eslint*, .oxlint*, oxlint*, .oxfmt*, .prettier*, prettier*, .editorconfig",
+    "tsdown.config.*": "tsconfig.*",
     "readme.md": "agents.md, claude.md, license",
     ".gitignore": ".git*"
   }
