@@ -7,7 +7,7 @@ yarn-error.log*
 lerna-debug.log*
 
 # build results
-lib
+dist
 
 # dependency directories
 node_modules/
